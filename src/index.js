@@ -2,6 +2,6 @@ import React from 'react';
 import {render} from 'react-dom';
 
 render(
-  React.createElement('h1', null, "Hello World from Parcel + React"),
+  <h1>Hello World from Parcel + React + JSX</h1>,
   document.getElementById('root')
 );

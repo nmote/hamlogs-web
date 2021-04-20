@@ -5,5 +5,12 @@
   "repository": "git@github.com:nmote/hamlogs-web.git",
   "author": "<nat@natmote.net>",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "scripts": {
+    "start": "parcel serve ./index.html",
+    "build": "parcel build ./index.html"
+  },
+  "devDependencies": {
+    "parcel": "^2.0.0-beta.2"
+  }
 }

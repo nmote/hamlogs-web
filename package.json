@@ -7,8 +7,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "parcel serve ./index.html",
-    "build": "parcel build ./index.html"
+    "start": "parcel serve ./src/index.html",
+    "build": "parcel build --dist-dir prod/ ./src/index.html"
   },
   "devDependencies": {
     "parcel": "^2.0.0-beta.2"

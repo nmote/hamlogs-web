@@ -1,0 +1,9 @@
+{
+  "name": "hamlogs-web",
+  "version": "0.0.1",
+  "description": "Web frontend for the hamlogs npm package",
+  "repository": "git@github.com:nmote/hamlogs-web.git",
+  "author": "<nat@natmote.net>",
+  "license": "MIT",
+  "private": true
+}

@@ -6,14 +6,22 @@ class Root extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {errors: null};
 
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleSubmit(callsign, park, csvText) {
-    // TODO handle error
-    const adif = CSVToAdif(callsign, park, csvText).value;
+    const adifResult = CSVToAdif(callsign, park, csvText);
+
+    if (adifResult.kind === 'err') {
+      this.setState({errors: adifResult.err});
+      return;
+    }
+
+    this.setState({errors: null});
+
+    const adif = adifResult.value;
 
     const aNode = document.createElement('a');
     const blob = new Blob([adif], {type: 'text/plain'});
@@ -28,6 +36,7 @@ class Root extends React.Component {
     return (
       <div>
         <Form onSubmit={this.handleSubmit}/>
+        <ErrorDisplay errors={this.state.errors}/>
       </div>
     );
   }
@@ -94,6 +103,22 @@ class Form extends React.Component {
         <input type="submit" value="Submit" />
       </form>
     );
+  }
+}
+
+class ErrorDisplay extends React.Component {
+  render() {
+    if (this.props.errors == null) {
+      return null;
+    }
+
+    return (
+      <div>
+        Could not convert the log due to the following errors:
+        <ul>
+          {this.props.errors.map((err, i) => (<li key={i}>{err}</li>))}
+        </ul>
+      </div>);
   }
 }
 

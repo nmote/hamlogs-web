@@ -6,7 +6,7 @@ class Root extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {outputText: null};
+    this.state = {};
 
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -14,14 +14,20 @@ class Root extends React.Component {
   handleSubmit(callsign, park, csvText) {
     // TODO handle error
     const adif = CSVToAdif(callsign, park, csvText).value;
-    this.setState({outputText: adif});
+
+    const aNode = document.createElement('a');
+    const blob = new Blob([adif], {type: 'text/plain'});
+    aNode.href = URL.createObjectURL(blob);
+    aNode.download = `${callsign}@${park}.adi`;
+    document.body.appendChild(aNode);
+    aNode.click();
+    document.body.removeChild(aNode);
   }
 
   render() {
     return (
       <div>
         <Form onSubmit={this.handleSubmit}/>
-        <OutputArea text={this.state.outputText}/>
       </div>
     );
   }
@@ -88,20 +94,6 @@ class Form extends React.Component {
         <input type="submit" value="Submit" />
       </form>
     );
-  }
-}
-
-class OutputArea extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    if (this.props.text == null) {
-      return null;
-    }
-
-    return <textarea value={this.props.text} disabled={true} />
   }
 }
 

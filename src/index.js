@@ -1,6 +1,6 @@
 import React from 'react';
 import {render} from 'react-dom';
-import {CSVToAdif} from 'hamlogs';
+import {CSVToAdif, CSVToSOTA} from 'hamlogs';
 
 class Root extends React.Component {
   constructor(props) {
@@ -11,25 +11,44 @@ class Root extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSubmit(callsign, park, csvText) {
-    const adifResult = CSVToAdif(callsign, park, csvText);
-
-    if (adifResult.kind === 'err') {
-      this.setState({errors: adifResult.err});
-      return;
-    }
-
-    this.setState({errors: null});
-
-    const adif = adifResult.value;
-
+  downloadFile(filename, text) {
     const aNode = document.createElement('a');
-    const blob = new Blob([adif], {type: 'text/plain'});
+    const blob = new Blob([text], {type: 'text/plain'});
     aNode.href = URL.createObjectURL(blob);
-    aNode.download = `${callsign}@${park}.adi`;
+    aNode.download = filename;
     document.body.appendChild(aNode);
     aNode.click();
     document.body.removeChild(aNode);
+  }
+
+  handleSubmit(program, callsign, entity, csvText) {
+    if (program === 'POTA') {
+      const adifResult = CSVToAdif(callsign, entity, csvText);
+
+      if (adifResult.kind === 'err') {
+        this.setState({errors: adifResult.err});
+        return;
+      }
+
+      this.setState({errors: null});
+
+      const adif = adifResult.value;
+
+      this.downloadFile(`${callsign}@${entity}.adi`, adif);
+    } else {
+      const SOTAResult = CSVToSOTA(callsign, entity, csvText);
+
+      if (SOTAResult.kind === 'err') {
+        this.setState({errors: SOTAResult.err});
+        return;
+      }
+
+      this.setState({errors: null});
+
+      const csvOut = SOTAResult.value;
+
+      this.downloadFile(`${callsign}@${entity}.csv`, csvOut);
+    }
   }
 
   render() {
@@ -47,14 +66,20 @@ class Form extends React.Component {
     super(props);
     this.state = {
       callsign: '',
-      park: '',
+      entity: '',
       file: null,
+      program: 'POTA',
     };
 
     this.handleCallsignChange = this.handleCallsignChange.bind(this);
-    this.handleParkChange = this.handleParkChange.bind(this);
+    this.handleEntityChange = this.handleEntityChange.bind(this);
     this.handleFileChange = this.handleFileChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleProgramChange = this.handleProgramChange.bind(this);
+  }
+
+  handleProgramChange(event) {
+    this.setState({program: event.target.value});
   }
 
   handleFileChange(event) {
@@ -65,34 +90,53 @@ class Form extends React.Component {
     this.setState({callsign: event.target.value});
   }
 
-  handleParkChange(event) {
-    this.setState({park: event.target.value});
+  handleEntityChange(event) {
+    this.setState({entity: event.target.value});
   }
 
   handleSubmit(event) {
     const reader = new FileReader();
 
+    const program = this.state.program;
     const callsign = this.state.callsign;
-    const park = this.state.park;
+    const entity = this.state.entity;
 
     reader.onload = (evt) => {
-      this.props.onSubmit(callsign, park, evt.target.result);
+      this.props.onSubmit(program, callsign, entity, evt.target.result);
     };
     reader.readAsText(this.state.file);
     event.preventDefault();
+  }
+
+  entityText() {
+    if (this.state.program === 'POTA') {
+      return 'Your park:';
+    } else {
+      return 'Your summit:';
+    }
   }
 
   render() {
     return (
       <form onSubmit={this.handleSubmit}>
         <label>
+          <input type="radio" value="POTA" checked={this.state.program === 'POTA'} onChange={this.handleProgramChange} />
+          POTA
+        </label>
+        <br/>
+        <label>
+          <input type="radio" value="SOTA" checked={this.state.program === 'SOTA'} onChange={this.handleProgramChange} />
+          SOTA
+        </label>
+        <hr/>
+        <label>
           Your callsign:
           <input type="text" value={this.state.callsign} onChange={this.handleCallsignChange} />
         </label>
         <br/>
         <label>
-          Your park:
-          <input type="text" value={this.state.park} onChange={this.handleParkChange} />
+          {this.entityText()}
+          <input type="text" value={this.state.entity} onChange={this.handleEntityChange} />
         </label>
         <br/>
         <label>

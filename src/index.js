@@ -140,7 +140,7 @@ class Form extends React.Component {
         </label>
         <br/>
         <label>
-          CSV File (<a href="https://raw.githubusercontent.com/nmote/hamlogs/main/fixtures/K-3213.csv">example</a>):
+          CSV File (<a href="https://raw.githubusercontent.com/nmote/hamlogs/main/fixtures/K-4531%2CW7W_CH-227.csv">example</a>):
           <input type="file" onChange={this.handleFileChange} />
         </label>
         <br/>

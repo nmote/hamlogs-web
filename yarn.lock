@@ -920,10 +920,10 @@ globals@^13.2.0:
   dependencies:
     type-fest "^0.20.2"
 
-hamlogs@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/hamlogs/-/hamlogs-0.4.1.tgz#3c61e10c15f3ff4a2d1b7ca7f4623ce889ff9db4"
-  integrity sha512-w4GKwsaMs0OPvqPbO4WbWxTGFLs3b7SxJbLuPxPSNJss9QJAUvhfH5qWARsgkLN1nhVvF1nlRhKF/7OUf22kag==
+hamlogs@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/hamlogs/-/hamlogs-0.5.0.tgz#53b6bf7ed8d6882c7b69894bfd2953aee5ecdcce"
+  integrity sha512-XR7MbdJzub270aZPTwGKnD+dmzPwYSeX2N5Udqv1D+lgWiUfMxrAI60hY4/9UfPMchvFoRNZkaQLJ7PLnYqSiQ==
   dependencies:
     papaparse "^5.3.1"
 

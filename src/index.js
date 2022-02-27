@@ -2,6 +2,10 @@ import React from 'react';
 import {render} from 'react-dom';
 import {CSVToAdif, CSVToSOTA} from 'hamlogs';
 
+function dateString(str) {
+  return str == null ? '' : ('_' + str);
+}
+
 class Root extends React.Component {
   constructor(props) {
     super(props);
@@ -32,9 +36,10 @@ class Root extends React.Component {
 
       this.setState({errors: null});
 
-      const adif = adifResult.value;
+      const adif = adifResult.value.text;
+      const {earliestEntryDate} = adifResult.value;
 
-      this.downloadFile(`${callsign}@${entity}.adi`, adif);
+      this.downloadFile(`${callsign}@${entity}${dateString(earliestEntryDate)}.adi`, adif);
     } else {
       const SOTAResult = CSVToSOTA(callsign, entity, csvText);
 
@@ -45,9 +50,10 @@ class Root extends React.Component {
 
       this.setState({errors: null});
 
-      const csvOut = SOTAResult.value;
+      const csvOut = SOTAResult.value.text;
+      const {earliestEntryDate} = SOTAResult.value;
 
-      this.downloadFile(`${callsign}@${entity}.csv`, csvOut);
+      this.downloadFile(`${callsign}@${entity}${dateString(earliestEntryDate)}.csv`, csvOut);
     }
   }
 
